@@ -184,6 +184,8 @@ public class HttpInput extends ServletInputStream implements Runnable
             if (failure == null)
                 failure = new IOException("unconsumed input");
             content.failed(failure);
+            if (_content == content)
+                _content = null;
         }
         return failure;
     }
@@ -377,7 +379,7 @@ public class HttpInput extends ServletInputStream implements Runnable
     protected Content nextContent() throws IOException
     {
         Content content = nextNonSentinelContent();
-        if (content == null && !isFinished())
+        if (content == null && !isFinished() && !isError())
         {
             produceContent();
             content = nextNonSentinelContent();
@@ -461,7 +463,7 @@ public class HttpInput extends ServletInputStream implements Runnable
                 // Intercept the current content.
                 // The interceptor may be called several
                 // times for the same content.
-                _intercepted = intercept(_content);
+                _intercepted = _interceptor.readFrom(_content);
 
                 // If interception produced new content
                 if (_intercepted != null && _intercepted != _content)
@@ -491,24 +493,6 @@ public class HttpInput extends ServletInputStream implements Runnable
         }
 
         return null;
-    }
-
-    private Content intercept(Content content) throws IOException
-    {
-        try
-        {
-            return _interceptor.readFrom(content);
-        }
-        catch (Throwable x)
-        {
-            IOException failure = new IOException("Bad content", x);
-            content.failed(failure);
-            HttpChannel channel = _channelState.getHttpChannel();
-            Response response = channel.getResponse();
-            if (response.isCommitted())
-                channel.abort(failure);
-            throw failure;
-        }
     }
 
     private void consume(Content content)
@@ -610,6 +594,8 @@ public class HttpInput extends ServletInputStream implements Runnable
             {
                 Throwable failure = isError() ? _state.getError() : new EOFException("Content after EOF");
                 content.failed(failure);
+                if (_content == content)
+                    _content = null;
                 return false;
             }
             else

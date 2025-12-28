@@ -164,7 +164,6 @@
                   <message>[ERROR] OLD JDK [${java.version}] in use. Jetty ${project.version} requires JDK 1.8.0 or newer</message>
                 </requireJavaVersion>
                 <versionTxtRule implementation="org.eclipse.jetty.toolchain.enforcer.rules.VersionTxtRule" />
-                <versionOsgiRule implementation="org.eclipse.jetty.toolchain.enforcer.rules.RequireOsgiCompatibleVersionRule" />
                 <versionRedhatRule implementation="org.eclipse.jetty.toolchain.enforcer.rules.RequireRedhatCompatibleVersionRule" />
                 <versionDebianRule implementation="org.eclipse.jetty.toolchain.enforcer.rules.RequireDebianCompatibleVersionRule" />
                 <requireUpperBoundDeps>
@@ -410,7 +409,7 @@
           <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>build-resources</artifactId>
-            <version>${project.version}</version>
+            <version>9.4.40.v20210413</version>
           </dependency>
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>

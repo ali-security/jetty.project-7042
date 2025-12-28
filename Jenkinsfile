@@ -145,6 +145,7 @@ def mavenBuild(jdk, cmdline, mvnName) {
     finally
     {
       junit testResults: '**/target/surefire-reports/*.xml,**/target/invoker-reports/TEST*.xml', allowEmptyResults: true
+      archiveArtifacts artifacts: ".repository/org/eclipse/jetty/jetty-home/**/jetty-home-*", allowEmptyArchive: true, onlyIfSuccessful: false
     }
   }
 }

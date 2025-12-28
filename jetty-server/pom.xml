@@ -7,6 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jetty-server</artifactId>
   <name>Jetty :: Server Core</name>
+  <version>9.4.40.v20210413+sp2</version>
   <description>The core jetty server artifact.</description>
   <properties>
     <bundle-symbolic-name>${project.groupId}.server</bundle-symbolic-name>
@@ -36,23 +37,23 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-http</artifactId>
-      <version>${project.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-io</artifactId>
-      <version>${project.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-xml</artifactId>
-      <version>${project.version}</version>
+      <version>${project.parent.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jmx</artifactId>
-      <version>${project.version}</version>
+      <version>${project.parent.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -63,14 +64,14 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-http</artifactId>
-      <version>${project.version}</version>
+      <version>${project.parent.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util-ajax</artifactId>
-      <version>${project.version}</version>
+      <version>${project.parent.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

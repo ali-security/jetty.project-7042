@@ -60,8 +60,11 @@ import org.eclipse.jetty.util.log.Logger;
 public class MultiPartFormInputStream
 {
     private static final Logger LOG = Log.getLogger(MultiPartFormInputStream.class);
+    private static final int DEFAULT_MAX_FORM_KEYS = 1000;
     private static final MultiMap<Part> EMPTY_MAP = new MultiMap<>(Collections.emptyMap());
     private final MultiMap<Part> _parts;
+    private final int _maxParts;
+    private int _numParts = 0;
     private InputStream _in;
     private MultipartConfigElement _config;
     private String _contentType;
@@ -324,16 +327,29 @@ public class MultiPartFormInputStream
      */
     public MultiPartFormInputStream(InputStream in, String contentType, MultipartConfigElement config, File contextTmpDir)
     {
+        this(in, contentType, config, contextTmpDir, DEFAULT_MAX_FORM_KEYS);
+    }
+
+    /**
+     * @param in Request input stream
+     * @param contentType Content-Type header
+     * @param config MultipartConfigElement
+     * @param contextTmpDir javax.servlet.context.tempdir
+     * @param maxParts the maximum number of parts that can be parsed from the multipart content (0 for no parts allowed, -1 for unlimited parts).
+     */
+    public MultiPartFormInputStream(InputStream in, String contentType, MultipartConfigElement config, File contextTmpDir, int maxParts)
+    {
         _contentType = contentType;
         _config = config;
         _contextTmpDir = contextTmpDir;
+        _maxParts = maxParts;
         if (_contextTmpDir == null)
             _contextTmpDir = new File(System.getProperty("java.io.tmpdir"));
 
         if (_config == null)
             _config = new MultipartConfigElement(_contextTmpDir.getAbsolutePath());
 
-        MultiMap parts = new MultiMap();
+        MultiMap<Part> parts = new MultiMap<>();
 
         if (in instanceof ServletInputStream)
         {
@@ -721,6 +737,9 @@ public class MultiPartFormInputStream
         public void startPart()
         {
             reset();
+            _numParts++;
+            if (_maxParts >= 0 && _numParts > _maxParts)
+                throw new IllegalStateException(String.format("Form with too many parts [%d > %d]", _numParts, _maxParts));
         }
 
         @Override
